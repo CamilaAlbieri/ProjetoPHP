@@ -31,15 +31,15 @@
                     <td>{{$registro->email }}</td>
                     <td>{{$registro->telefone }}</td>
                     <td>
-                        <a href="{{url('/autor/edit', $registro->id)}}">Alteração</a>
-                        <a href="{{url('/autor/destroy', $registro->id)}}">Exclusão</a>
-                        <a href="{{url('/autor/show', $registro->id)}}">Consulta</a>
+                        <a href="{{route('autor.edit', $registro->id)}}">Alteração</a>
+                        <a href="{{route('autor.delete', $registro->id)}}">Exclusão</a>
+                        <a href="{{route('autor.show', $registro->id)}}">Consulta</a>
                     </td>
                 </tr>
                 @endforeach
             </body>
         </table>
-        <a href="{{url('/autor/create') }}">Incluir</a>
+        <a href="{{route('autor.create') }}">Incluir</a>
     </div>
 </body>
 </html>

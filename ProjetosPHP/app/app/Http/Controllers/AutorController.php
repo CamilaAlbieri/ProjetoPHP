@@ -19,7 +19,7 @@ class AutorController extends Controller
     public function index()
     {
        // dd('acessando o controller autor controler - index');// mostrar uma mensagem 
-        $registros = $this->repository->paginate(10);
+        $registros = $this->repository->paginate(60);
 	   // dd($registros);
 
         return view ('autor.index', [
@@ -40,24 +40,11 @@ class AutorController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, $id)
+    public function store(Request $request)
     {
-        //
         $registro = $request->all();
-        $autor = $this->repository->find($id);
-
-        //$autor['nome'] = $registro['nome'];
-        //$autor['apelido'] = $registro['apelido'];
-        //$autor['cidade'] = $registro['cidade'];
-        //$autor['bairro'] = $registro['bairro'];
-        //$autor['cep'] = $registro['cep'];
-        //$autor['email'] = $registro['email'];
-        //$autor['telefone'] = $registro['telefone'];
-        //$this->repository->update($autor);
-
-        $autor->update($registro);
-        
-        dd($registro);
+        $this->repository->create($registro);
+        return redirect()->route('autor.index');
     }
 
     /**
@@ -65,7 +52,10 @@ class AutorController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $registro = $this->repository->find($id);
+        return view ('autor.show', [
+        'registro'=> $registro
+    ]);
     }
 
     /**
@@ -84,14 +74,42 @@ class AutorController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+         //
+         $registro = $request->all();
+         $autor = $this->repository->find($id);
+ 
+         //$autor['nome'] = $registro['nome'];
+         //$autor['apelido'] = $registro['apelido'];
+         //$autor['cidade'] = $registro['cidade'];
+         //$autor['bairro'] = $registro['bairro'];
+         //$autor['cep'] = $registro['cep'];
+         //$autor['email'] = $registro['email'];
+         //$autor['telefone'] = $registro['telefone'];
+         //$this->repository->update($autor);
+ 
+         //$autor->save();
+ 
+         $autor->update($registro);
+
+         return redirect()->route('autor.index');
+         
+         //dd($registro);
     }
 
+    public function delete($id){
+       $registro = $this->repository->find($id);
+
+       return view ('autor.destroy', [
+        'registro' => $registro
+       ] );
+    }
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(string $id)
     {
-        //
+        $registro = $this->repository->find($id);
+        $registro->delete($id);    
+        return redirect()->route('autor.index');   
     }
 }
