@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Autor;
+use App\Services\AutorServiceInterface;
 use Illuminate\Http\Request;
 
 class AutorController extends Controller
 {
-    private $repository;
+    private $service;
 
-    public function __construct(Autor $autor)
+    public function __construct(AutorServiceInterface $service)
     {
-        $this->repository = $autor;
+        $this->service = $service;
     }
     /**
      * Display a listing of the resource.
@@ -19,11 +20,11 @@ class AutorController extends Controller
     public function index()
     {
        // dd('acessando o controller autor controler - index');// mostrar uma mensagem 
-        $registros = $this->repository->paginate(60);
+        $registros = $this->service->index();
 	   // dd($registros);
 
         return view ('autor.index', [
-            'registros' => $registros, //Procura no index a variavel registro e coloca em registros
+            'registros' => $registros['registros'], //Procura no index a variavel registro e coloca em registros
     
     ]); //retorna os conteudo para determinado local
     }
@@ -42,30 +43,30 @@ class AutorController extends Controller
      */
     public function store(Request $request)
     {
-        $registro = $request->all();
-        $this->repository->create($registro);
+       
+        $this->service->store($request);
         return redirect()->route('autor.index');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        $registro = $this->repository->find($id);
+        $registro = $this->service->show($id);
         return view ('autor.show', [
-        'registro'=> $registro
+        'registro'=> $registro['registro'],
     ]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        $registro = $this->repository->find($id);
+        $registro = $this->service->show($id);
         return view ('autor.edit', [
-            'registro'=>$registro
+            'registro'=>$registro['registro'],
         ]);
     }
 
@@ -74,33 +75,18 @@ class AutorController extends Controller
      */
     public function update(Request $request, string $id)
     {
-         //
-         $registro = $request->all();
-         $autor = $this->repository->find($id);
- 
-         //$autor['nome'] = $registro['nome'];
-         //$autor['apelido'] = $registro['apelido'];
-         //$autor['cidade'] = $registro['cidade'];
-         //$autor['bairro'] = $registro['bairro'];
-         //$autor['cep'] = $registro['cep'];
-         //$autor['email'] = $registro['email'];
-         //$autor['telefone'] = $registro['telefone'];
-         //$this->repository->update($autor);
- 
-         //$autor->save();
- 
-         $autor->update($registro);
+
+         $this->service->update($request, $id);
 
          return redirect()->route('autor.index');
-         
-         //dd($registro);
+
     }
 
     public function delete($id){
-       $registro = $this->repository->find($id);
+       $registro = $this->service->delete($id);
 
        return view ('autor.destroy', [
-        'registro' => $registro
+        'registro' => $registro['registro'],
        ] );
     }
     /**
@@ -108,8 +94,7 @@ class AutorController extends Controller
      */
     public function destroy(string $id)
     {
-        $registro = $this->repository->find($id);
-        $registro->delete($id);    
+        $this->service->destroy($id);    
         return redirect()->route('autor.index');   
     }
 }
